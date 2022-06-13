@@ -29,7 +29,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.camera.CameraPosition.Builder;
@@ -321,7 +320,7 @@ public class LocationPickerActivity extends BaseActivity implements OnMapReadyCa
         uiSettings.setAttributionEnabled(false);
 
         // Check if permissions are enabled and if not request
-        if (PermissionsManager.areLocationPermissionsGranted(this)) {
+//        if (PermissionsManager.areLocationPermissionsGranted(this)) {
 
             // Get an instance of the component
             final LocationComponent locationComponent = mapboxMap.getLocationComponent();
@@ -339,7 +338,7 @@ public class LocationPickerActivity extends BaseActivity implements OnMapReadyCa
             // Set the component's render mode
             locationComponent.setRenderMode(RenderMode.NORMAL);
 
-        }
+//        }
     }
 
     /**
