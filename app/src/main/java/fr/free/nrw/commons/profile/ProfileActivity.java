@@ -121,10 +121,10 @@ public class ProfileActivity extends BaseActivity {
      */
     public static void startYourself(final Context context, final String userName,
         final boolean shouldShowContributions) {
-        Intent intent = new Intent(context, ProfileActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        intent.putExtra(KEY_USERNAME, userName);
-        intent.putExtra(KEY_SHOULD_SHOW_CONTRIBUTIONS, shouldShowContributions);
+        Intent intent = new Intent(context, fr.free.nrw.commons.profile.ProfileActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        intent.putExtra(KEY_USERNAME, userName);
+//        intent.putExtra(KEY_SHOULD_SHOW_CONTRIBUTIONS, shouldShowContributions);
         context.startActivity(intent);
     }
 
