@@ -16,7 +16,6 @@ if (isRunningOnTravisAndIsNotPRBuild) {
 
 dependencies {
 
-    implementation project(':wikimedia-data-client')
     implementation project(':profile')
 
     // Utils
