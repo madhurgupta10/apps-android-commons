@@ -56,8 +56,19 @@ class ProfileActivityTest {
     @Test
     @Throws(Exception::class)
     fun testOnCreateOptionsMenu() {
+        // Mock the menu
         val menu: Menu = RoboMenu(mockContext)
+
+        // Call the method to be tested
         activity.onCreateOptionsMenu(menu)
+
+        // Verify that the menu has the correct number of items
+        Assert.assertEquals(1, menu.size())
+
+        // Verify the properties of the share menu item
+        val shareMenuItem = menu.findItem(R.id.share_app_icon)
+        Assert.assertNotNull(shareMenuItem)
+        Assert.assertTrue(shareMenuItem.isVisible)
     }
 
     @Test
