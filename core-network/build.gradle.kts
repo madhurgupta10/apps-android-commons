@@ -14,26 +14,26 @@ kotlin {
 
 dependencies {
     // Kotlin Standard Library
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.0.0")
+    implementation(libs.kotlin.stdlib.jdk8)
 
     // Kotlinx Coroutines (Kotlin library, not Android-specific)
-    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    api(libs.kotlinx.coroutines.test)
 
     // Retrofit & Networking (Android-agnostic)
-    api("com.squareup.retrofit2:retrofit:2.11.0")
-    api("com.squareup.retrofit2:converter-gson:2.11.0")
-    api("com.squareup.okhttp3:okhttp:4.10.0")
-    api("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    api(libs.retrofit.new)
+    api(libs.retrofit.converter.gson.new)
+    api(libs.okhttp)
+    api(libs.logging.interceptor)
 
     // Gson for JSON serialization (Kotlin library)
-    api("com.google.code.gson:gson:2.10.1")
+    api(libs.gson.new)
 
     // Dependency Injection - Using javax.inject (pure Java)
-    compileOnly("javax.inject:javax.inject:1")
+    compileOnly(libs.javax.inject)
 
     // Testing
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-    testImplementation("io.mockk:mockk:1.13.5")
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
 }
 

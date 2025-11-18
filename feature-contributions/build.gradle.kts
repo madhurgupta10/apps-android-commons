@@ -70,17 +70,17 @@ dependencies {
     implementation(libs.androidx.paging.common.ktx)
 
     // RxJava
-    implementation("io.reactivex.rxjava2:rxjava:2.2.21")
-    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
+    implementation(libs.rxjava.new)
+    implementation(libs.rxandroid.new)
 
     // Timber for logging
-    implementation("com.jakewharton.timber:timber:4.7.1")
+    implementation(libs.timber)
 
     // Testing
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.3.1")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.0.0")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core.new)
+    testImplementation(libs.mockito.kotlin.new)
+    testImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core.new)
 }
 

@@ -74,13 +74,13 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
     // Material3 Window Size Class
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
+    implementation(libs.androidx.material3.window.size)
 
     // Hilt Navigation Compose
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Material Icons Extended
-    implementation("androidx.compose.material:material-icons-extended:1.7.5")
+    implementation(libs.androidx.material.icons.extended)
 
     // Hilt Dependency Injection
     implementation(libs.hilt.android)
@@ -88,8 +88,8 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     // Hilt WorkManager
-    implementation("androidx.hilt:hilt-work:1.2.0")
-    ksp("androidx.hilt:hilt-compiler:1.2.0")
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
 
     // Room Database
     implementation(libs.androidx.room.runtime)
@@ -100,18 +100,18 @@ dependencies {
     // Paging 3
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.common.ktx)
-    implementation("androidx.paging:paging-compose:3.3.4")
+    implementation(libs.androidx.paging.compose)
 
     // WorkManager for background sync
     implementation(libs.androidx.work.runtime.ktx)
 
 
     // Kotlinx Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.test)
 
     // Coil for image loading in Compose
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.coil.compose)
 
     // Timber for logging
     implementation(libs.timber)
@@ -120,7 +120,7 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.core.testing)
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.androidx.work.testing)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
