@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteException
 import android.os.Build
 import android.os.Process
 import android.util.Log
+import coil.ImageLoader
+import coil.ImageLoaderFactory
 import androidx.multidex.MultiDexApplication
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
@@ -68,7 +70,7 @@ import javax.inject.Named
 )
 
 @HiltAndroidApp
-class CommonsApplication : MultiDexApplication() {
+class CommonsApplication : MultiDexApplication(), ImageLoaderFactory {
 
     @Inject
     lateinit var sessionManager: SessionManager
@@ -190,6 +192,27 @@ class CommonsApplication : MultiDexApplication() {
     val userAgent: String
         get() = ("Commons/" + this.getVersionNameWithSha()
                 + " (https://mediawiki.org/wiki/Apps/Commons) Android/" + Build.VERSION.RELEASE)
+
+    /**
+     * Provides a custom ImageLoader for Coil with User-Agent header.
+     * Required by Wikimedia servers to prevent HTTP 403 errors when loading images.
+     */
+    override fun newImageLoader(): ImageLoader {
+        return ImageLoader.Builder(this)
+            .okHttpClient {
+                okhttp3.OkHttpClient.Builder()
+                    .addInterceptor { chain ->
+                        val request = chain.request().newBuilder()
+                            .header("User-Agent", userAgent)
+                            .build()
+                        chain.proceed(request)
+                    }
+                    .build()
+            }
+            .crossfade(true)
+            .respectCacheHeaders(false)
+            .build()
+    }
 
     /**
      * clears data of current application

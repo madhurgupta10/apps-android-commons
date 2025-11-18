@@ -9,7 +9,7 @@ import fr.free.nrw.commons.BuildConfig
 //        other places in the app.
 object ConfigUtils {
     @JvmStatic
-    val isBetaFlavour: Boolean = BuildConfig.FLAVOR == "beta"
+    val isBetaFlavour: Boolean = BuildConfig.FLAVOR == "sdasd"
 
     @JvmStatic
     private fun Context.getVersionName(): String? =

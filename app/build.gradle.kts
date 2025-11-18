@@ -259,6 +259,10 @@ dependencies {
     implementation(libs.androidx.ui.viewbinding)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.foundation)
+
+    // Coil for Compose image loading
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
     implementation(libs.androidx.foundation.layout)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

@@ -16,3 +16,6 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":feature-profile")
+include(":feature-contributions")
+include(":core-network")
+include(":core-database")
