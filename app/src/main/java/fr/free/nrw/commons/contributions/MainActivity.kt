@@ -39,6 +39,7 @@ import fr.free.nrw.commons.utils.applyEdgeToEdgeAllInsets
 import fr.free.nrw.commons.upload.UploadProgressActivity
 import fr.free.nrw.commons.upload.worker.WorkRequestHelper.Companion.makeOneTimeWorkRequest
 import fr.free.nrw.commons.utils.ViewUtilWrapper
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
@@ -46,7 +47,7 @@ import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Named
 
-
+@AndroidEntryPoint
 class MainActivity : BaseActivity(), FragmentManager.OnBackStackChangedListener {
     @JvmField
     @Inject

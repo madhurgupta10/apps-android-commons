@@ -7,17 +7,42 @@ import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import fr.free.nrw.commons.BuildConfig
+import fr.free.nrw.commons.data.DBOpenHelper
 import fr.free.nrw.commons.di.CommonsDaggerContentProvider
 import fr.free.nrw.commons.explore.recentsearches.RecentSearchesTable.ALL_FIELDS
 import fr.free.nrw.commons.explore.recentsearches.RecentSearchesTable.COLUMN_ID
 import fr.free.nrw.commons.explore.recentsearches.RecentSearchesTable.TABLE_NAME
 
 /**
+ * Entry point for injecting dependencies into RecentSearchesContentProvider
+ * ContentProviders cannot use @AndroidEntryPoint, so we use @EntryPoint instead
+ */
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface RecentSearchesContentProviderEntryPoint {
+    fun dbOpenHelper(): DBOpenHelper
+}
+
+/**
  * This class contains functions for executing queries for
  * inserting, searching, deleting, editing recent searches in SqLite DB
  */
 class RecentSearchesContentProvider : CommonsDaggerContentProvider() {
+
+    override fun onCreate(): Boolean {
+        // Initialize dbOpenHelper using EntryPoint since ContentProviders don't support @AndroidEntryPoint
+        val entryPoint = EntryPointAccessors.fromApplication(
+            context!!.applicationContext,
+            RecentSearchesContentProviderEntryPoint::class.java
+        )
+        dbOpenHelper = entryPoint.dbOpenHelper()
+        return true
+    }
 
     /**
      * This functions executes query for searching recent searches in SqLite DB
@@ -30,15 +55,16 @@ class RecentSearchesContentProvider : CommonsDaggerContentProvider() {
 
         val uriType = uriMatcher.match(uri)
 
+        val db = requireDb()
         val cursor = when (uriType) {
-            RECENT_SEARCHES -> requireDb().query(
+            RECENT_SEARCHES -> db.query(
                 queryBuilder.columns(projection)
                     .selection(selection, selectionArgs)
                     .orderBy(sortOrder)
                     .create()
             )
 
-            RECENT_SEARCHES_ID -> requireDb().query(
+            RECENT_SEARCHES_ID -> db.query(
                 queryBuilder.columns(ALL_FIELDS)
                     .selection(
                         "$COLUMN_ID = ?", arrayOf(uri.lastPathSegment)
@@ -62,9 +88,10 @@ class RecentSearchesContentProvider : CommonsDaggerContentProvider() {
      */
     override fun insert(uri: Uri, contentValues: ContentValues?): Uri? {
         val uriType = uriMatcher.match(uri)
+        val db = requireDb()
         val id: Long? = when (uriType) {
             RECENT_SEARCHES -> contentValues?.let {
-                requireDb().insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, it)
+                db.insert(TABLE_NAME, 0, it)
             }
 
             else -> throw IllegalArgumentException("Unknown URI: $uri")
@@ -77,11 +104,12 @@ class RecentSearchesContentProvider : CommonsDaggerContentProvider() {
      * This functions executes query for deleting a recentSearch object in SqLite DB
      */
     override fun delete(uri: Uri, s: String?, strings: Array<String>?): Int {
+        val db = requireDb()
         val rows: Int
         val uriType = uriMatcher.match(uri)
         when (uriType) {
             RECENT_SEARCHES_ID -> {
-                rows = requireDb().delete(
+                rows = db.delete(
                     TABLE_NAME,
                     "_id = ?",
                     arrayOf(uri.lastPathSegment)
@@ -99,17 +127,17 @@ class RecentSearchesContentProvider : CommonsDaggerContentProvider() {
      */
     override fun bulkInsert(uri: Uri, values: Array<ContentValues>): Int {
         val uriType = uriMatcher.match(uri)
-        val sqlDB = requireDb()
-        sqlDB.beginTransaction()
+        val db = requireDb()
+        db.beginTransaction()
         when (uriType) {
             RECENT_SEARCHES -> for (value in values) {
-                sqlDB.insert(TABLE_NAME, SQLiteDatabase.CONFLICT_NONE, value)
+                db.insert(TABLE_NAME, 0, value)
             }
 
             else -> throw IllegalArgumentException("Unknown URI: $uri")
         }
-        sqlDB.setTransactionSuccessful()
-        sqlDB.endTransaction()
+        db.setTransactionSuccessful()
+        db.endTransaction()
         context?.contentResolver?.notifyChange(uri, null)
         return values.size
     }
@@ -121,24 +149,16 @@ class RecentSearchesContentProvider : CommonsDaggerContentProvider() {
         uri: Uri, contentValues: ContentValues?, selection: String?,
         selectionArgs: Array<String>?
     ): Int {
-        /*
-        SQL Injection warnings: First, note that we're not exposing this to the
-        outside world (exported="false"). Even then, we should make sure to sanitize
-        all user input appropriately. Input that passes through ContentValues
-        should be fine. So only issues are those that pass in via concating.
-
-        In here, the only concat created argument is for id. It is cast to an int,
-        and will error out otherwise.
-         */
+        val db = requireDb()
         val uriType = uriMatcher.match(uri)
         var rowsUpdated: Int = 0
         when (uriType) {
             RECENT_SEARCHES_ID -> if (selection.isNullOrEmpty()) {
                 val id = uri.lastPathSegment!!.toInt()
                 contentValues?.let {
-                    rowsUpdated = requireDb().update(
+                    rowsUpdated = db.update(
                         TABLE_NAME,
-                        SQLiteDatabase.CONFLICT_NONE,
+                        0,
                         it,
                         "$COLUMN_ID = ?",
                         arrayOf(id.toString())

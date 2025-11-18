@@ -5,18 +5,42 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.net.Uri
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.EntryPointAccessors
+import dagger.hilt.components.SingletonComponent
 import fr.free.nrw.commons.BuildConfig
+import fr.free.nrw.commons.data.DBOpenHelper
 import fr.free.nrw.commons.di.CommonsDaggerContentProvider
 import fr.free.nrw.commons.recentlanguages.RecentLanguagesTable.COLUMN_NAME
 import fr.free.nrw.commons.recentlanguages.RecentLanguagesTable.TABLE_NAME
 import androidx.core.net.toUri
 import androidx.sqlite.db.SupportSQLiteQueryBuilder
 
+/**
+ * Entry point for injecting dependencies into RecentLanguagesContentProvider
+ * ContentProviders cannot use @AndroidEntryPoint, so we use @EntryPoint instead
+ */
+@EntryPoint
+@InstallIn(SingletonComponent::class)
+interface RecentLanguagesContentProviderEntryPoint {
+    fun dbOpenHelper(): DBOpenHelper
+}
 
 /**
  * Content provider of recently used languages
  */
 class RecentLanguagesContentProvider : CommonsDaggerContentProvider() {
+
+    override fun onCreate(): Boolean {
+        // Initialize dbOpenHelper using EntryPoint since ContentProviders don't support @AndroidEntryPoint
+        val entryPoint = EntryPointAccessors.fromApplication(
+            context!!.applicationContext,
+            RecentLanguagesContentProviderEntryPoint::class.java
+        )
+        dbOpenHelper = entryPoint.dbOpenHelper()
+        return true
+    }
 
     companion object {
         private const val BASE_PATH = "recent_languages"
