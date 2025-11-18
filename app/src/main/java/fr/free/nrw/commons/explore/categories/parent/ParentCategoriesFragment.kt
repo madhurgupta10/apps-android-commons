@@ -6,7 +6,9 @@ import fr.free.nrw.commons.R
 import fr.free.nrw.commons.category.CATEGORY_PREFIX
 import fr.free.nrw.commons.explore.categories.PageableCategoryFragment
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ParentCategoriesFragment : PageableCategoryFragment() {
     @Inject
     lateinit var presenter: ParentCategoriesPresenter

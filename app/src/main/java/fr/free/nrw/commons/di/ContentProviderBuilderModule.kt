@@ -1,6 +1,5 @@
 package fr.free.nrw.commons.di
 
-import dagger.android.ContributesAndroidInjector
 import fr.free.nrw.commons.bookmarks.items.BookmarkItemsContentProvider
 import fr.free.nrw.commons.bookmarks.pictures.BookmarkPicturesContentProvider
 import fr.free.nrw.commons.category.CategoryContentProvider

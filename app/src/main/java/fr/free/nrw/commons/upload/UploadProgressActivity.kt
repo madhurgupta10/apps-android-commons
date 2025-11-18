@@ -12,6 +12,7 @@ import fr.free.nrw.commons.databinding.ActivityUploadProgressBinding
 import fr.free.nrw.commons.theme.BaseActivity
 import fr.free.nrw.commons.utils.applyEdgeToEdgeAllInsets
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Activity to manage the progress of uploads. It includes tabs to show pending and failed uploads,
@@ -19,6 +20,7 @@ import javax.inject.Inject
  * which holds Pending Uploads Fragment and Failed Uploads Fragment to show list of pending and
  * failed uploads respectively.
  */
+@AndroidEntryPoint
 class UploadProgressActivity : BaseActivity() {
     private lateinit var binding: ActivityUploadProgressBinding
     private var pendingUploadsFragment: PendingUploadsFragment? = null

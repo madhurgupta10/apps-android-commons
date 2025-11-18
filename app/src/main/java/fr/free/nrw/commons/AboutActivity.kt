@@ -22,10 +22,12 @@ import androidx.core.net.toUri
 import fr.free.nrw.commons.utils.applyEdgeToEdgeTopInsets
 import fr.free.nrw.commons.utils.handleWebUrl
 import fr.free.nrw.commons.utils.setUnderlinedText
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Represents about screen of this app
  */
+@AndroidEntryPoint
 class AboutActivity : BaseActivity() {
     /*
          This View Binding class is auto-generated for each xml file. The format is usually the name

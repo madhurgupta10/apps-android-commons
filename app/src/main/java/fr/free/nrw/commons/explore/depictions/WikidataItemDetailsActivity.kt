@@ -32,10 +32,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.Consumer
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Activity to show depiction media, parent classes and child classes of depicted items in Explore
  */
+@AndroidEntryPoint
 class WikidataItemDetailsActivity : BaseActivity(), MediaDetailProvider, CategoryImagesCallback {
     @JvmField
     @Inject

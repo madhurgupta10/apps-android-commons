@@ -5,11 +5,13 @@ import android.view.MenuItem
 import fr.free.nrw.commons.databinding.ActivitySettingsBinding
 import fr.free.nrw.commons.theme.BaseActivity
 import fr.free.nrw.commons.utils.applyEdgeToEdgeAllInsets
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
  * allows the user to change the settings
  */
+@AndroidEntryPoint
 class SettingsActivity : BaseActivity() {
 
     private lateinit var binding: ActivitySettingsBinding

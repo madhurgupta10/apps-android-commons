@@ -30,6 +30,7 @@ import fr.free.nrw.commons.wikidata.model.WikiSite
 import fr.free.nrw.commons.wikidata.model.page.PageTitle
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
@@ -37,6 +38,7 @@ import javax.inject.Inject
  * Its generic and simply takes the name of category name in its start intent to load all images, subcategories in
  * a particular category on wikimedia commons.
  */
+@AndroidEntryPoint
 class CategoryDetailsActivity : BaseActivity(),
     MediaDetailProvider,
     CategoryImagesCallback {

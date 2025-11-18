@@ -13,7 +13,9 @@ import fr.free.nrw.commons.R
 import fr.free.nrw.commons.theme.BaseActivity
 import fr.free.nrw.commons.utils.applyEdgeToEdgeAllInsets
 import timber.log.Timber
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignupActivity : BaseActivity() {
     private var webView: WebView? = null
 

@@ -29,10 +29,12 @@ import timber.log.Timber
 import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Represents search screen of this app
  */
+@AndroidEntryPoint
 class SearchActivity : BaseActivity(), MediaDetailProvider, CategoryImagesCallback {
     @JvmField
     @Inject

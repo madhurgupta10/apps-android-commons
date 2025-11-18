@@ -63,7 +63,7 @@ abstract class PageableMediaFragment :
 
     override fun getTotalMediaCount(): Int = pagedListAdapter.itemCount
 
-    override fun getContributionStateAt(position: Int) = null
+    override fun getContributionStateAt(position: Int): Int? = null
 
     /**
      * Reload media detail fragment once media is nominated

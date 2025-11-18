@@ -285,14 +285,7 @@ dependencies {
     }
     implementation(libs.logging.interceptor)
 
-    // Dependency injector
-    implementation(libs.dagger.android)
-    implementation(libs.dagger.android.support)
-    kapt(libs.dagger.android.processor)
-    kapt(libs.dagger.compiler)
-    annotationProcessor(libs.dagger.android.processor)
-
-    // Hilt
+    // Hilt Dependency Injection
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 

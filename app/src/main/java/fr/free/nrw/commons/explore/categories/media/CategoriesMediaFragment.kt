@@ -5,7 +5,9 @@ import android.view.View
 import fr.free.nrw.commons.category.CATEGORY_PREFIX
 import fr.free.nrw.commons.explore.media.PageableMediaFragment
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CategoriesMediaFragment : PageableMediaFragment() {
     @Inject
     lateinit var presenter: CategoryMediaPresenter

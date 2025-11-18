@@ -21,7 +21,6 @@ osmdroidAndroid = "6.1.17"
 testCore = "1.4.0"
 coreKtx = "1.16.0"
 coreTesting = "2.2.0"
-dagger = "2.23"
 databindingCompiler = "8.0.2"
 dexterVersion = "5.0.0"
 espresso = "3.6.1"
@@ -125,10 +124,6 @@ androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "
 androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workManager" }
 
 # Dependency injection (DI)
-dagger-android-processor = { module = "com.google.dagger:dagger-android-processor", version.ref = "dagger" }
-dagger-android-support = { module = "com.google.dagger:dagger-android-support", version.ref = "dagger" }
-dagger-android = { module = "com.google.dagger:dagger-android", version.ref = "dagger" }
-dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version = "1.2.0" }

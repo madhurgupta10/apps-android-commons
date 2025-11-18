@@ -11,17 +11,15 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.multidex.BuildConfig
 import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
-import dagger.android.ContributesAndroidInjector
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import fr.free.nrw.commons.BuildConfig.HOME_URL
+import fr.free.nrw.commons.BuildConfig
 import fr.free.nrw.commons.CommonsApplication
 import fr.free.nrw.commons.Media
 import fr.free.nrw.commons.R
@@ -125,12 +123,6 @@ class UploadWorker(
         statesToProcess.add(Contribution.STATE_QUEUED)
     }
 
-    @dagger.Module
-    @InstallIn(SingletonComponent::class)
-    interface Module {
-        @ContributesAndroidInjector
-        fun worker(): UploadWorker
-    }
 
     open inner class NotificationUpdateProgressListener(
         private var notificationFinishingTitle: String?,
@@ -507,7 +499,7 @@ class UploadWorker(
                         withContext(Dispatchers.IO) {
                             val place = placesRepository.fetchPlace(wikiDataPlace.id)
                             place.name = wikiDataPlace.name
-                            place.pic = HOME_URL + uploadResult.createCanonicalFileName()
+                            place.pic = BuildConfig.HOME_URL + uploadResult.createCanonicalFileName()
                             placesRepository
                                 .save(place)
                                 .subscribeOn(Schedulers.io())

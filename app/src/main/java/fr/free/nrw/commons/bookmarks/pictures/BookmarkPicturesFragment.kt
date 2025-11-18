@@ -7,7 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ListAdapter
-import dagger.android.support.DaggerFragment
+import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import fr.free.nrw.commons.Media
 import fr.free.nrw.commons.R
 import fr.free.nrw.commons.bookmarks.BookmarkListRootFragment
@@ -22,7 +23,8 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-class BookmarkPicturesFragment : DaggerFragment() {
+@AndroidEntryPoint
+class BookmarkPicturesFragment : Fragment() {
     private var gridAdapter: GridViewAdapter? = null
     private val compositeDisposable = CompositeDisposable()
 
