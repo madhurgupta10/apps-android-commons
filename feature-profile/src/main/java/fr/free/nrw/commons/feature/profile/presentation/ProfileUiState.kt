@@ -5,6 +5,7 @@ import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardDuration
 import fr.free.nrw.commons.feature.profile.domain.model.Achievement
 import fr.free.nrw.commons.feature.profile.domain.model.LeaderboardUser
 import fr.free.nrw.commons.feature.profile.domain.model.UserProfile
+import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
 
 /**
  * UI state for the Profile screen.
@@ -47,26 +48,4 @@ enum class ProfileTab {
     CONTRIBUTIONS
 }
 
-/**
- * Represents a user contribution (placeholder for future implementation).
- */
-data class Contribution(
-    val id: String,
-    val title: String,
-    val thumbnailUrl: String?,
-    val uploadDate: Long,
-    val views: Int,
-    val aspectRatio: Float = 1f, // width/height for smart grid sizing
-    val width: Int = 0,
-    val height: Int = 0
-)
-
-/**
- * Groups contributions by timeline (day, week, month, year)
- */
-data class TimelineGroup(
-    val label: String, // e.g., "Today", "1 year ago", "December 2024"
-    val timestamp: Long,
-    val contributions: List<Contribution>
-)
 

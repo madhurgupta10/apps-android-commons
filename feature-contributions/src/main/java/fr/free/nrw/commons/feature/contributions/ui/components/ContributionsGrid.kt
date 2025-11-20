@@ -1,4 +1,4 @@
-package fr.free.nrw.commons.feature.profile.presentation.components
+package fr.free.nrw.commons.feature.contributions.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,8 +35,8 @@ import coil.ImageLoader
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import fr.free.nrw.commons.feature.profile.presentation.Contribution
-import fr.free.nrw.commons.feature.profile.presentation.TimelineGroup
+import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
+import fr.free.nrw.commons.feature.contributions.ui.models.TimelineGroup
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -467,3 +467,4 @@ private fun formatViewCount(views: Int): String {
         else -> String.format(Locale.US, "%.1fM", views / 1_000_000.0)
     }
 }
+

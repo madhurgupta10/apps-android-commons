@@ -14,7 +14,6 @@ import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardDuration
 import fr.free.nrw.commons.feature.profile.data.mapper.toDomainModel
 import fr.free.nrw.commons.feature.profile.data.mapper.toEntity
 import fr.free.nrw.commons.feature.profile.data.mapper.toAchievementsList
-import fr.free.nrw.commons.feature.profile.data.mapper.toContribution
 import fr.free.nrw.commons.feature.profile.data.remote.ProfileApiService
 import fr.free.nrw.commons.feature.profile.domain.model.Achievement
 import fr.free.nrw.commons.feature.profile.domain.model.LeaderboardUser
@@ -237,7 +236,7 @@ class ProfileRepositoryImpl @Inject constructor(
     override suspend fun getUserContributions(
         username: String,
         limit: Int
-    ): Result<List<fr.free.nrw.commons.feature.profile.presentation.Contribution>> {
+    ): Result<List<fr.free.nrw.commons.feature.contributions.ui.models.Contribution>> {
         // TODO: Implement when MediaWiki API is properly configured
         // Temporarily return empty list - "Coming Soon" message shown in UI
         return Result.success(emptyList())

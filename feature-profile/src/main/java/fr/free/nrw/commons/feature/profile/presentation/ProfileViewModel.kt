@@ -10,6 +10,7 @@ import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardCategory
 import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardDuration
 import fr.free.nrw.commons.feature.profile.data.worker.ProfileSyncWorker
 import fr.free.nrw.commons.feature.profile.domain.repository.ProfileRepository
+import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ class ProfileViewModel @Inject constructor(
     private var contributionsJob: Job? = null
 
     // Default username - hardcoded for development
-    private var currentUsername: String = "Syced"
+    private var currentUsername: String = "Madhurgupta10"
 
     init {
         setupPeriodicSync()

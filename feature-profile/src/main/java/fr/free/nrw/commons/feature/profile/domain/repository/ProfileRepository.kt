@@ -6,7 +6,7 @@ import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardDuration
 import fr.free.nrw.commons.feature.profile.domain.model.Achievement
 import fr.free.nrw.commons.feature.profile.domain.model.LeaderboardUser
 import fr.free.nrw.commons.feature.profile.domain.model.UserProfile
-import fr.free.nrw.commons.feature.profile.presentation.Contribution
+import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
 import kotlinx.coroutines.flow.Flow
 
 /**

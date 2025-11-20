@@ -1,5 +1,6 @@
 package fr.free.nrw.commons.feature.profile.presentation
 
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -21,9 +22,10 @@ import fr.free.nrw.commons.feature.profile.domain.model.Achievement
 import fr.free.nrw.commons.feature.profile.domain.model.LeaderboardUser
 import fr.free.nrw.commons.feature.profile.domain.model.UserProfile
 import fr.free.nrw.commons.feature.profile.presentation.components.AchievementsGrid
-import fr.free.nrw.commons.feature.profile.presentation.components.ContributionsGrid
 import fr.free.nrw.commons.feature.profile.presentation.components.LeaderboardList
 import fr.free.nrw.commons.feature.profile.presentation.components.ProfileHeader
+import fr.free.nrw.commons.feature.contributions.ui.components.ContributionsGrid
+import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
 
 /**
  * Main Profile screen with adaptive layout for phones and tablets.
@@ -39,7 +41,7 @@ fun ProfileScreen(
     val imageLoader = context.imageLoader
 
     // Determine if we're on a tablet or phone
-    val isComponentActivity = context is androidx.activity.ComponentActivity
+    val isComponentActivity = context is ComponentActivity
     val windowSizeClass = if (isComponentActivity) {
         calculateWindowSizeClass(context)
     } else {

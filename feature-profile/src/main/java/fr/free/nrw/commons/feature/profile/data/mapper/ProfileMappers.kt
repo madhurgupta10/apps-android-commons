@@ -14,7 +14,7 @@ import fr.free.nrw.commons.feature.profile.data.remote.dto.UserProfileDto
 import fr.free.nrw.commons.feature.profile.domain.model.Achievement
 import fr.free.nrw.commons.feature.profile.domain.model.LeaderboardUser
 import fr.free.nrw.commons.feature.profile.domain.model.UserProfile
-import fr.free.nrw.commons.feature.profile.presentation.Contribution
+import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
 import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.Locale
