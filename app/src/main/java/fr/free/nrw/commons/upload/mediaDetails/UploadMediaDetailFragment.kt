@@ -57,9 +57,11 @@ import java.io.File
 import java.util.ArrayList
 import java.util.Locale
 import java.util.Objects
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
 
+@AndroidEntryPoint
 class UploadMediaDetailFragment : UploadBaseFragment(), UploadMediaDetailsContract.View,
     UploadMediaDetailAdapter.EventListener {
 

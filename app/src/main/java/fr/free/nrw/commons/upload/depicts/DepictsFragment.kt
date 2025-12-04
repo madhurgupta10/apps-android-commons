@@ -3,13 +3,11 @@ package fr.free.nrw.commons.upload.depicts
 import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -39,6 +37,7 @@ import io.reactivex.Notification
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
+import dagger.hilt.android.AndroidEntryPoint
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import java.util.concurrent.TimeUnit
@@ -48,6 +47,7 @@ import javax.inject.Named
 /**
  * Fragment for showing depicted items list in Upload activity after media details
  */
+@AndroidEntryPoint
 class DepictsFragment : UploadBaseFragment(), DepictsContract.View {
     @Inject
     @field:Named("default_preferences")
