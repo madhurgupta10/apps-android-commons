@@ -47,7 +47,7 @@ private const val GRID_COLUMNS = 3
 /**
  * Data class to track span layout for each item
  */
-private data class SpanLayout(val index: Int, val span: Int)
+internal data class SpanLayout(val index: Int, val span: Int)
 
 /**
  * Calculates optimal spans for all items to ensure no gaps (Google Photos style).

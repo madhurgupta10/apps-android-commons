@@ -157,7 +157,33 @@ class UploadMediaDetailFragment : UploadBaseFragment(), UploadMediaDetailsContra
     ): View {
         _binding = FragmentUploadMediaDetailFragmentBinding.inflate(inflater, container, false)
         _binding!!.mediaDetailCardView.handleKeyboardInsets()
-        // intialise the adapter early to prevent uninitialized access
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        basicKvStore = BasicKvStore(requireActivity(), "CurrentUploadImageQualities")
+
+        // Check if dependencies are injected before initializing adapter
+        if (!::defaultKvStore.isInitialized || !::recentLanguagesDao.isInitialized || !::presenter.isInitialized) {
+            Timber.e("Dependencies not yet injected in onViewCreated, deferring initialization")
+            // Post to ensure dependencies are injected
+            view.post {
+                if (::defaultKvStore.isInitialized && ::recentLanguagesDao.isInitialized && ::presenter.isInitialized) {
+                    initializeAdapter(savedInstanceState)
+                } else {
+                    Timber.e("Dependencies still not injected after post, cannot initialize")
+                }
+            }
+            return
+        }
+
+        initializeAdapter(savedInstanceState)
+    }
+
+    private fun initializeAdapter(savedInstanceState: Bundle?) {
+        // Initialize the adapter now that injected dependencies are available
         uploadMediaDetailAdapter = UploadMediaDetailAdapter(
             this,
             defaultKvStore.getString(Prefs.DESCRIPTION_LANGUAGE, "")!!,
@@ -170,13 +196,6 @@ class UploadMediaDetailFragment : UploadBaseFragment(), UploadMediaDetailsContra
         uploadMediaDetailAdapter.eventListener = this
         binding.rvDescriptions.layoutManager = LinearLayoutManager(context)
         binding.rvDescriptions.adapter = uploadMediaDetailAdapter
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        basicKvStore = BasicKvStore(requireActivity(), "CurrentUploadImageQualities")
 
         // restore adapter items from savedInstanceState if available
         if (savedInstanceState != null) {

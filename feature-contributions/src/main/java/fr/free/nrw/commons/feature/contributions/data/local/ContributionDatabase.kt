@@ -6,10 +6,14 @@ import androidx.room.TypeConverters
 
 /**
  * Room database for contributions feature
+ *
+ * Version history:
+ * - v1: Initial schema
+ * - v2: Fixed timestamp parsing to use UTC timezone (forces cache refresh)
  */
 @Database(
     entities = [ContributionEntity::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 @TypeConverters(ContributionConverters::class)

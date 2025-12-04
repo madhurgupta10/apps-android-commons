@@ -81,6 +81,7 @@ dependencies {
     // Paging 3
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.common.ktx)
+    implementation(libs.androidx.paging.compose)
 
     // RxJava
     implementation(libs.rxjava.new)

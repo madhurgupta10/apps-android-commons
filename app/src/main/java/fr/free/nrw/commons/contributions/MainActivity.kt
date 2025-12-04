@@ -407,18 +407,61 @@ after opening the app.
     }
 
     private fun restoreActiveFragment(fragmentName: String) {
-        if (fragmentName == ActiveFragment.CONTRIBUTIONS.name) {
-            title = getString(R.string.contributions_fragment)
-            loadFragment(newInstance(), false)
-        } else if (fragmentName == ActiveFragment.NEARBY.name) {
-            title = getString(R.string.nearby_fragment)
-            loadFragment(NearbyParentFragment.newInstance(), false)
-        } else if (fragmentName == ActiveFragment.EXPLORE.name) {
-            title = getString(R.string.navigation_item_explore)
-            loadFragment(ExploreFragment.newInstance(), false)
-        } else if (fragmentName == ActiveFragment.BOOKMARK.name) {
-            title = getString(R.string.bookmarks)
-            loadFragment(BookmarkFragment.newInstance(), false)
+        // Try to find the existing fragment that was restored by FragmentManager
+        val existingFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+
+        if (existingFragment != null) {
+            // Fragment was already restored by FragmentManager, just update references and title
+            when (fragmentName) {
+                ActiveFragment.CONTRIBUTIONS.name -> {
+                    title = getString(R.string.contributions_fragment)
+                    if (existingFragment is ContributionsFragment) {
+                        contributionsFragment = existingFragment
+                        activeFragment = ActiveFragment.CONTRIBUTIONS
+                    }
+                }
+                ActiveFragment.NEARBY.name -> {
+                    title = getString(R.string.nearby_fragment)
+                    if (existingFragment is NearbyParentFragment) {
+                        nearbyParentFragment = existingFragment
+                        activeFragment = ActiveFragment.NEARBY
+                    }
+                }
+                ActiveFragment.EXPLORE.name -> {
+                    title = getString(R.string.navigation_item_explore)
+                    if (existingFragment is ExploreFragment) {
+                        exploreFragment = existingFragment
+                        activeFragment = ActiveFragment.EXPLORE
+                    }
+                }
+                ActiveFragment.BOOKMARK.name -> {
+                    title = getString(R.string.bookmarks)
+                    if (existingFragment is BookmarkFragment) {
+                        bookmarkFragment = existingFragment
+                        activeFragment = ActiveFragment.BOOKMARK
+                    }
+                }
+            }
+        } else {
+            // No fragment found, create a new one (shouldn't happen in normal flow)
+            when (fragmentName) {
+                ActiveFragment.CONTRIBUTIONS.name -> {
+                    title = getString(R.string.contributions_fragment)
+                    loadFragment(newInstance(), false)
+                }
+                ActiveFragment.NEARBY.name -> {
+                    title = getString(R.string.nearby_fragment)
+                    loadFragment(NearbyParentFragment.newInstance(), false)
+                }
+                ActiveFragment.EXPLORE.name -> {
+                    title = getString(R.string.navigation_item_explore)
+                    loadFragment(ExploreFragment.newInstance(), false)
+                }
+                ActiveFragment.BOOKMARK.name -> {
+                    title = getString(R.string.bookmarks)
+                    loadFragment(BookmarkFragment.newInstance(), false)
+                }
+            }
         }
     }
 

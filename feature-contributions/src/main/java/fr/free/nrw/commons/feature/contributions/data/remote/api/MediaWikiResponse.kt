@@ -7,19 +7,22 @@ import com.google.gson.annotations.SerializedName
  */
 data class MediaWikiResponse(
     @SerializedName("continue")
-    val continueToken: ContinueToken?,
+    val continueToken: Map<String, String>?,
 
     @SerializedName("query")
     val query: Query?
-)
+) {
+    /**
+     * Get the gaicontinue value from the continuation map
+     */
+    fun getGaiContinue(): String? = continueToken?.get("gaicontinue")
 
-data class ContinueToken(
-    @SerializedName("gaicontinue")
-    val gaiContinue: String?,
+    /**
+     * Check if there are more pages to fetch
+     */
+    fun hasMore(): Boolean = continueToken != null && getGaiContinue() != null
+}
 
-    @SerializedName("continue")
-    val continueParam: String?
-)
 
 data class Query(
     @SerializedName("pages")

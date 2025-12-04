@@ -14,6 +14,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.ImageLoader
 import coil.imageLoader
 import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardCategory
@@ -24,8 +27,8 @@ import fr.free.nrw.commons.feature.profile.domain.model.UserProfile
 import fr.free.nrw.commons.feature.profile.presentation.components.AchievementsGrid
 import fr.free.nrw.commons.feature.profile.presentation.components.LeaderboardList
 import fr.free.nrw.commons.feature.profile.presentation.components.ProfileHeader
-import fr.free.nrw.commons.feature.contributions.ui.components.ContributionsGrid
-import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
+import fr.free.nrw.commons.feature.contributions.ui.components.ContributionsPagingGrid
+import fr.free.nrw.commons.feature.contributions.domain.model.ContributionModel
 
 /**
  * Main Profile screen with adaptive layout for phones and tablets.
@@ -50,6 +53,24 @@ fun ProfileScreen(
     val isExpandedScreen = windowSizeClass?.widthSizeClass == WindowWidthSizeClass.Expanded
     val isCompact = windowSizeClass?.widthSizeClass == WindowWidthSizeClass.Compact
 
+    // Only collect paging items when on expanded screen AND contributions tab is selected
+    // OR when on compact screen (since it always shows contributions)
+    val shouldLoadContributions = isCompact || (!isExpandedScreen && uiState.selectedTab == ProfileTab.CONTRIBUTIONS) ||
+                                   (isExpandedScreen && uiState.selectedTab == ProfileTab.CONTRIBUTIONS)
+
+    // Trigger lazy loading when needed
+    LaunchedEffect(shouldLoadContributions, isCompact, isExpandedScreen, uiState.selectedTab) {
+        if (shouldLoadContributions) {
+            // Trigger the ViewModel to initialize contributions if on compact screen
+            if (isCompact) {
+                viewModel.onTabSelected(ProfileTab.CONTRIBUTIONS)
+            }
+        }
+    }
+
+    // Collect paginated contributions - this will only be collected when the flow is not empty
+    val contributionsPagingItems = uiState.contributionsPagingFlow.collectAsLazyPagingItems()
+
     Scaffold { paddingValues ->
         when {
             uiState.isLoading && uiState.userProfile == null -> {
@@ -66,6 +87,7 @@ fun ProfileScreen(
                 if (isExpandedScreen) {
                     ExpandedProfileContent(
                         uiState = uiState,
+                        contributionsPagingItems = contributionsPagingItems,
                         imageLoader = imageLoader,
                         onTabSelected = viewModel::onTabSelected,
                         onCategorySelected = viewModel::onCategorySelected,
@@ -76,6 +98,7 @@ fun ProfileScreen(
                 } else {
                     CompactProfileContent(
                         uiState = uiState,
+                        contributionsPagingItems = contributionsPagingItems,
                         imageLoader = imageLoader,
                         onTabSelected = viewModel::onTabSelected,
                         onCategorySelected = viewModel::onCategorySelected,
@@ -96,6 +119,7 @@ fun ProfileScreen(
 @Composable
 private fun CompactProfileContent(
     uiState: ProfileUiState,
+    contributionsPagingItems: LazyPagingItems<ContributionModel>,
     imageLoader: ImageLoader,
     onTabSelected: (ProfileTab) -> Unit,
     onCategorySelected: (LeaderboardCategory) -> Unit,
@@ -114,7 +138,7 @@ private fun CompactProfileContent(
         }
 
         ContributionsTab(
-            contributions = uiState.contributions,
+            contributionsPagingItems = contributionsPagingItems,
             imageLoader = imageLoader
         )
     }
@@ -126,6 +150,7 @@ private fun CompactProfileContent(
 @Composable
 private fun ExpandedProfileContent(
     uiState: ProfileUiState,
+    contributionsPagingItems: LazyPagingItems<ContributionModel>,
     imageLoader: ImageLoader,
     onTabSelected: (ProfileTab) -> Unit,
     onCategorySelected: (LeaderboardCategory) -> Unit,
@@ -192,7 +217,7 @@ private fun ExpandedProfileContent(
                 }
                 ProfileTab.CONTRIBUTIONS -> {
                     ContributionsTab(
-                        contributions = uiState.contributions,
+                        contributionsPagingItems = contributionsPagingItems,
                         imageLoader = imageLoader
                     )
                 }
@@ -331,10 +356,11 @@ private fun FilterChips(
 
 @Composable
 private fun ContributionsTab(
-    contributions: List<Contribution>,
+    contributionsPagingItems: LazyPagingItems<ContributionModel>,
     imageLoader: ImageLoader
 ) {
-    if (contributions.isEmpty()) {
+    // Show loading state when refreshing and no items yet
+    if (contributionsPagingItems.loadState.refresh is LoadState.Loading && contributionsPagingItems.itemCount == 0) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
@@ -358,8 +384,8 @@ private fun ContributionsTab(
             }
         }
     } else {
-        ContributionsGrid(
-            contributions = contributions,
+        ContributionsPagingGrid(
+            contributions = contributionsPagingItems,
             imageLoader = imageLoader
         )
     }
@@ -407,15 +433,8 @@ private fun ErrorScreen(
 private fun PreviewCompactProfileLeaderboard() {
     val context = LocalContext.current
     MaterialTheme {
-        CompactProfileContent(
-            uiState = createMockProfileUiState(),
-            imageLoader = ImageLoader.Builder(context).build(),
-            onTabSelected = {},
-            onCategorySelected = {},
-            onDurationSelected = {},
-            onRefresh = {},
-            isCompact = true
-        )
+        // Note: Cannot preview paging items, showing placeholder
+        Text("Preview not available for paging content")
     }
 }
 
@@ -424,15 +443,8 @@ private fun PreviewCompactProfileLeaderboard() {
 private fun PreviewCompactProfileAchievements() {
     val context = LocalContext.current
     MaterialTheme {
-        CompactProfileContent(
-            uiState = createMockProfileUiState().copy(selectedTab = ProfileTab.ACHIEVEMENTS),
-            imageLoader = ImageLoader.Builder(context).build(),
-            onTabSelected = {},
-            onCategorySelected = {},
-            onDurationSelected = {},
-            onRefresh = {},
-            isCompact = true
-        )
+        // Note: Cannot preview paging items, showing placeholder
+        Text("Preview not available for paging content")
     }
 }
 
@@ -441,15 +453,8 @@ private fun PreviewCompactProfileAchievements() {
 private fun PreviewCompactProfileContributions() {
     val context = LocalContext.current
     MaterialTheme {
-        CompactProfileContent(
-            uiState = createMockProfileUiState().copy(selectedTab = ProfileTab.CONTRIBUTIONS),
-            imageLoader = ImageLoader.Builder(context).build(),
-            onTabSelected = {},
-            onCategorySelected = {},
-            onDurationSelected = {},
-            onRefresh = {},
-            isCompact = true
-        )
+        // Note: Cannot preview paging items, showing placeholder
+        Text("Preview not available for paging content")
     }
 }
 
@@ -477,14 +482,8 @@ private fun PreviewErrorState() {
 private fun PreviewExpandedProfile() {
     val context = LocalContext.current
     MaterialTheme {
-        ExpandedProfileContent(
-            uiState = createMockProfileUiState(),
-            imageLoader = ImageLoader.Builder(context).build(),
-            onTabSelected = {},
-            onCategorySelected = {},
-            onDurationSelected = {},
-            onRefresh = {}
-        )
+        // Note: Cannot preview paging items, showing placeholder
+        Text("Preview not available for paging content")
     }
 }
 
@@ -574,141 +573,6 @@ private fun createMockProfileUiState() = ProfileUiState(
         isCurrentUser = true
     ),
     selectedCategory = LeaderboardCategory.UPLOAD,
-    selectedDuration = LeaderboardDuration.WEEKLY,
-    contributions = createMockContributions()
+    selectedDuration = LeaderboardDuration.WEEKLY
 )
-
-/**
- * Creates mock contributions with varying aspect ratios for realistic staggered grid preview
- */
-private fun createMockContributions(): List<Contribution> {
-    val now = System.currentTimeMillis()
-    val oneDayMs = 24 * 60 * 60 * 1000L
-
-    return listOf(
-        // Today - varying sizes
-        Contribution(
-            id = "1",
-            title = "Forest landscape",
-            thumbnailUrl = "https://picsum.photos/800/600",
-            uploadDate = now - (2 * 60 * 60 * 1000L), // 2 hours ago
-            views = 1234,
-            aspectRatio = 1.33f, // Landscape
-            width = 800,
-            height = 600
-        ),
-        Contribution(
-            id = "2",
-            title = "Portrait photo",
-            thumbnailUrl = "https://picsum.photos/600/900",
-            uploadDate = now - (3 * 60 * 60 * 1000L),
-            views = 567,
-            aspectRatio = 0.67f, // Portrait
-            width = 600,
-            height = 900
-        ),
-        Contribution(
-            id = "3",
-            title = "Square image",
-            thumbnailUrl = "https://picsum.photos/800/800",
-            uploadDate = now - (4 * 60 * 60 * 1000L),
-            views = 890,
-            aspectRatio = 1.0f, // Square
-            width = 800,
-            height = 800
-        ),
-        Contribution(
-            id = "4",
-            title = "Wide panorama",
-            thumbnailUrl = "https://picsum.photos/1200/600",
-            uploadDate = now - (5 * 60 * 60 * 1000L),
-            views = 2100,
-            aspectRatio = 2.0f, // Wide
-            width = 1200,
-            height = 600
-        ),
-        // Yesterday
-        Contribution(
-            id = "5",
-            title = "City street",
-            thumbnailUrl = "https://picsum.photos/700/1000",
-            uploadDate = now - (oneDayMs + 3 * 60 * 60 * 1000L),
-            views = 456,
-            aspectRatio = 0.7f, // Portrait
-            width = 700,
-            height = 1000
-        ),
-        Contribution(
-            id = "6",
-            title = "Architecture",
-            thumbnailUrl = "https://picsum.photos/900/700",
-            uploadDate = now - (oneDayMs + 5 * 60 * 60 * 1000L),
-            views = 789,
-            aspectRatio = 1.29f, // Landscape
-            width = 900,
-            height = 700
-        ),
-        Contribution(
-            id = "7",
-            title = "Concert hall",
-            thumbnailUrl = "https://picsum.photos/1000/600",
-            uploadDate = now - (oneDayMs + 6 * 60 * 60 * 1000L),
-            views = 1500,
-            aspectRatio = 1.67f, // Wide landscape
-            width = 1000,
-            height = 600
-        ),
-        Contribution(
-            id = "8",
-            title = "Hot air balloon",
-            thumbnailUrl = "https://picsum.photos/750/750",
-            uploadDate = now - (oneDayMs + 8 * 60 * 60 * 1000L),
-            views = 345,
-            aspectRatio = 1.0f, // Square
-            width = 750,
-            height = 750
-        ),
-        // 3 days ago
-        Contribution(
-            id = "9",
-            title = "Sunset",
-            thumbnailUrl = "https://picsum.photos/800/500",
-            uploadDate = now - (3 * oneDayMs),
-            views = 2300,
-            aspectRatio = 1.6f,
-            width = 800,
-            height = 500
-        ),
-        Contribution(
-            id = "10",
-            title = "Mountain landscape",
-            thumbnailUrl = "https://picsum.photos/600/1100",
-            uploadDate = now - (3 * oneDayMs + 2 * 60 * 60 * 1000L),
-            views = 678,
-            aspectRatio = 0.55f, // Tall portrait
-            width = 600,
-            height = 1100
-        ),
-        Contribution(
-            id = "11",
-            title = "Abstract pattern",
-            thumbnailUrl = "https://picsum.photos/850/850",
-            uploadDate = now - (3 * oneDayMs + 4 * 60 * 60 * 1000L),
-            views = 234,
-            aspectRatio = 1.0f,
-            width = 850,
-            height = 850
-        ),
-        Contribution(
-            id = "12",
-            title = "Beach sunset",
-            thumbnailUrl = "https://picsum.photos/1100/700",
-            uploadDate = now - (3 * oneDayMs + 6 * 60 * 60 * 1000L),
-            views = 1890,
-            aspectRatio = 1.57f,
-            width = 1100,
-            height = 700
-        )
-    )
-}
 

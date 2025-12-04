@@ -6,12 +6,13 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import fr.free.nrw.commons.core.network.NetworkFactory
+import fr.free.nrw.commons.feature.profile.data.remote.JsonpResponseConverterFactory
 import fr.free.nrw.commons.feature.profile.data.remote.ProfileApiService
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -31,18 +32,25 @@ object NetworkModule {
 
     /**
      * Provides a Retrofit instance configured for profile API calls.
-     * Uses the OkHttpClient singleton from the app module's NetworkingModule.
+     * Uses a custom JSONP converter to handle Toolforge API responses.
      *
      * @param okHttpClient The singleton OkHttpClient from the app module
+     * @param gson Gson instance from app's NetworkingModule (shared singleton)
      */
     @Provides
     @Singleton
     @Named("profile_retrofit")
-    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        return NetworkFactory.createRetrofit(
-            baseUrl = BASE_URL,
-            okHttpClient = okHttpClient
-        )
+    fun provideRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        // Toolforge APIs (feedback.py, leaderboard.py) return JSON wrapped in JavaScript
+        // We need a custom converter to extract the JSON before parsing
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(JsonpResponseConverterFactory.create(gson))
+            .build()
     }
 
     @Provides

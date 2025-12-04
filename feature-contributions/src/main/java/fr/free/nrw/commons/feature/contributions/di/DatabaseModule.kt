@@ -55,7 +55,18 @@ object DatabaseModule {
             val request = chain.request().newBuilder()
                 .addHeader("User-Agent", USER_AGENT)
                 .build()
-            chain.proceed(request)
+
+            // Log the actual URL being called
+            timber.log.Timber.d("MediaWikiApi: Calling URL: ${request.url}")
+
+            val response = chain.proceed(request)
+
+            // Log response for debugging (only first 500 chars to avoid huge logs)
+            val responseBody = response.peekBody(Long.MAX_VALUE)
+            val bodyString = responseBody.string()
+            timber.log.Timber.d("MediaWikiApi: Response body (first 500 chars): ${bodyString.take(500)}")
+
+            response
         }
 
         val retrofit = NetworkFactory.createRetrofit(

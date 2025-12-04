@@ -1,11 +1,14 @@
 package fr.free.nrw.commons.feature.profile.presentation
 
+import androidx.paging.PagingData
 import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardCategory
 import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardDuration
 import fr.free.nrw.commons.feature.profile.domain.model.Achievement
 import fr.free.nrw.commons.feature.profile.domain.model.LeaderboardUser
 import fr.free.nrw.commons.feature.profile.domain.model.UserProfile
-import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
+import fr.free.nrw.commons.feature.contributions.domain.model.ContributionModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 
 /**
  * UI state for the Profile screen.
@@ -28,8 +31,8 @@ data class ProfileUiState(
     val userRank: LeaderboardUser? = null,
     val leaderboardError: String? = null,
 
-    // Contributions tab
-    val contributions: List<Contribution> = emptyList(),
+    // Contributions tab - now uses PagingData for efficient pagination
+    val contributionsPagingFlow: Flow<PagingData<ContributionModel>> = emptyFlow(),
     val contributionsError: String? = null,
 
     // General error

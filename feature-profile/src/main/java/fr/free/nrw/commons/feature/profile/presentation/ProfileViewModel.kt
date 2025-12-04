@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import fr.free.nrw.commons.feature.contributions.domain.usecase.ObserveContributionsUseCase
-import fr.free.nrw.commons.feature.contributions.domain.usecase.RefreshContributionsUseCase
+import fr.free.nrw.commons.feature.contributions.domain.usecase.GetUserContributionsUseCase
 import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardCategory
 import fr.free.nrw.commons.feature.profile.data.local.entity.LeaderboardDuration
 import fr.free.nrw.commons.feature.profile.data.worker.ProfileSyncWorker
 import fr.free.nrw.commons.feature.profile.domain.repository.ProfileRepository
-import fr.free.nrw.commons.feature.contributions.ui.models.Contribution
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -26,8 +24,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository,
     private val workManager: WorkManager,
-    private val observeContributions: ObserveContributionsUseCase,
-    private val refreshContributions: RefreshContributionsUseCase
+    private val getUserContributions: GetUserContributionsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -36,21 +33,23 @@ class ProfileViewModel @Inject constructor(
     private var profileJob: Job? = null
     private var achievementsJob: Job? = null
     private var leaderboardJob: Job? = null
-    private var contributionsJob: Job? = null
 
-    // Default username - hardcoded for development
+    // Track if contributions have been loaded to enable lazy loading
+    private var contributionsInitialized = false
+
+    // Default username - use a username that has actual contributions
     private var currentUsername: String = "Madhurgupta10"
 
     init {
         setupPeriodicSync()
         loadInitialData()
-        loadContributions() // Load real contributions
+        // Don't load contributions here - will be loaded lazily when contributions tab is accessed
     }
 
     fun setUsername(username: String) {
         currentUsername = username
         loadInitialData()
-        loadContributions() // Reload contributions for new user
+        // Contributions will be reloaded automatically when paging flow is re-collected
     }
 
     private fun loadInitialData() {
@@ -152,6 +151,12 @@ class ProfileViewModel @Inject constructor(
 
     fun onTabSelected(tab: ProfileTab) {
         _uiState.update { it.copy(selectedTab = tab) }
+
+        // Lazily initialize contributions paging flow when Contributions tab is first accessed
+        if (tab == ProfileTab.CONTRIBUTIONS && !contributionsInitialized) {
+            loadContributions()
+            contributionsInitialized = true
+        }
     }
 
     fun onCategorySelected(category: LeaderboardCategory) {
@@ -212,57 +217,32 @@ class ProfileViewModel @Inject constructor(
     }
 
     /**
-     * Load user contributions from feature-contributions module
+     * Load user contributions with pagination support
+     * Uses RemoteMediator to automatically fetch from network when needed
      */
     private fun loadContributions() {
-        contributionsJob?.cancel()
-        contributionsJob = viewModelScope.launch {
-            _uiState.update { it.copy(contributionsError = null) }
+        try {
+            Timber.d("Setting up paginated contributions for $currentUsername")
 
-            try {
-                Timber.d("Loading contributions for $currentUsername")
+            // Get the paginated flow from repository
+            val contributionsPagingFlow = getUserContributions(currentUsername)
 
-                // First, trigger a refresh to fetch from network
-                refreshContributions(currentUsername).fold(
-                    onSuccess = {
-                        Timber.d("Contributions refreshed successfully")
-                    },
-                    onFailure = { error ->
-                        Timber.e(error, "Failed to refresh contributions")
-                    }
+            // Update UI state with the paging flow
+            _uiState.update {
+                it.copy(
+                    contributionsPagingFlow = contributionsPagingFlow,
+                    contributionsError = null
                 )
-
-                // Then observe from database
-                observeContributions(currentUsername).collect { contributions ->
-                    Timber.d("Received ${contributions.size} contributions from DB")
-                    _uiState.update {
-                        it.copy(
-                            contributions = contributions.map { contribution ->
-                                // Convert ContributionModel to Contribution for UI
-                                Contribution(
-                                    id = contribution.pageId,
-                                    title = contribution.filename ?: "Untitled",
-                                    thumbnailUrl = contribution.thumbUrl ?: contribution.imageUrl,
-                                    uploadDate = contribution.dateUploaded?.time ?: 0L,
-                                    views = 0, // Views not available in ContributionModel yet
-                                    aspectRatio = 1f, // Default square aspect ratio
-                                    width = 640, // Default thumbnail width
-                                    height = 640 // Default thumbnail height
-                                )
-                            },
-                            contributionsError = null
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        contributions = emptyList(),
-                        contributionsError = e.message ?: "Failed to load contributions"
-                    )
-                }
-                Timber.e(e, "Exception loading contributions")
             }
+
+            Timber.d("Paginated contributions flow set up successfully")
+        } catch (e: Exception) {
+            _uiState.update {
+                it.copy(
+                    contributionsError = e.message ?: "Failed to load contributions"
+                )
+            }
+            Timber.e(e, "Exception loading contributions")
         }
     }
 
