@@ -36,8 +36,6 @@ junit = "4.13.2"
 junitJupiter = "5.10.0"
 ksp = "2.0.0-1.0.21"
 kotlin = "2.0.0"
-kotlinStdlib = "2.0.0"
-kotlin = "2.1.0"
 kotlinStdlib = "1.8.0"
 coroutines = "1.7.3"
 leakcanary = "2.10"
@@ -219,8 +217,6 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt" }
 compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 github-triplet-play = { id = "com.github.triplet.play", version.ref = "githubTripletPlay" }
 getkeepsafe-dexcount = { id = "com.getkeepsafe.dexcount", version.ref = "dexcount" }
 android-library = { id = "com.android.library", version.ref = "agp" }
