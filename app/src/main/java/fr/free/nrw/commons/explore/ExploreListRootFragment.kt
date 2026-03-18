@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import fr.free.nrw.commons.Media
 import fr.free.nrw.commons.R
@@ -12,7 +11,6 @@ import fr.free.nrw.commons.category.CategoryImagesCallback
 import fr.free.nrw.commons.contributions.MainActivity
 import fr.free.nrw.commons.databinding.FragmentFeaturedRootBinding
 import fr.free.nrw.commons.di.CommonsDaggerSupportFragment
-import fr.free.nrw.commons.explore.categories.media.CategoriesMediaFragment
 import fr.free.nrw.commons.media.MediaDetailPagerFragment
 import fr.free.nrw.commons.media.MediaDetailProvider
 import fr.free.nrw.commons.navtab.NavTab
@@ -22,17 +20,15 @@ import dagger.hilt.android.AndroidEntryPoint
 class ExploreListRootFragment : CommonsDaggerSupportFragment, MediaDetailProvider,
     CategoryImagesCallback {
     private var mediaDetails: MediaDetailPagerFragment? = null
-    private var listFragment: CategoriesMediaFragment? = null
+    private var listFragment: ExploreComposeGridFragment? = null
     private var binding: FragmentFeaturedRootBinding? = null
 
     constructor()
 
     constructor(bundle: Bundle) {
-        listFragment = CategoriesMediaFragment().apply {
-            arguments = bundleOf(
-                "categoryName" to bundle.getString("categoryName")
-            )
-        }
+        listFragment = ExploreComposeGridFragment.newInstance(
+            bundle.getString("categoryName")!!
+        )
     }
 
     override fun onCreateView(

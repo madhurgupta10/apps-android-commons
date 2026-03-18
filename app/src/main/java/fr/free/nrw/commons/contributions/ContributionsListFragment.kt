@@ -19,14 +19,22 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.net.toUri
 import androidx.core.os.BundleCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagedList
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener
 import androidx.recyclerview.widget.SimpleItemAnimator
+import coil.imageLoader
 import fr.free.nrw.commons.Media
 import fr.free.nrw.commons.MediaDataExtractor
 import fr.free.nrw.commons.R
@@ -35,6 +43,7 @@ import fr.free.nrw.commons.contributions.WikipediaInstructionsDialogFragment.Com
 import fr.free.nrw.commons.databinding.FragmentContributionsListBinding
 import fr.free.nrw.commons.di.CommonsDaggerSupportFragment
 import fr.free.nrw.commons.di.NetworkingModule
+import fr.free.nrw.commons.feature.contributions.ui.components.ContributionsPagingGrid
 import fr.free.nrw.commons.filepicker.FilePicker
 import fr.free.nrw.commons.media.MediaClient
 import fr.free.nrw.commons.profile.ProfileActivity
@@ -85,6 +94,12 @@ class ContributionsListFragment : CommonsDaggerSupportFragment(), ContributionsL
     private var rotateForward: Animation? = null
     private var rotateBackward: Animation? = null
     private var isFabOpen = false
+
+    // ViewModel for the new Compose-based contributions grid.
+    // Instantiated via requireActivity() so that ComponentActivity's defaultViewModelCreationExtras
+    // (which includes SAVED_STATE_REGISTRY_OWNER_KEY) is used. Fragment 1.3.6 does not populate
+    // that key, causing a Hilt crash when using the fragment-scoped by viewModels() delegate.
+    private lateinit var contributionsGridViewModel: ContributionsGridViewModel
 
     private lateinit var inAppCameraLocationPermissionLauncher:
             ActivityResultLauncher<Array<String>>
@@ -151,6 +166,15 @@ class ContributionsListFragment : CommonsDaggerSupportFragment(), ContributionsL
         if (userName.isNullOrEmpty()) {
             userName = sessionManager!!.userName
         }
+
+        // Use requireActivity() as the ViewModelStoreOwner so that Hilt receives the full
+        // CreationExtras (including SAVED_STATE_REGISTRY_OWNER_KEY) from ComponentActivity.
+        // A per-user key keeps instances isolated when viewing other users' profiles.
+        contributionsGridViewModel = ViewModelProvider(requireActivity())[
+            "ContributionsGridViewModel_${userName ?: "self"}",
+            ContributionsGridViewModel::class.java
+        ]
+
         inAppCameraLocationPermissionLauncher =
         registerForActivityResult(RequestMultiplePermissions()) { result ->
             val areAllGranted = result.values.all { it }
@@ -211,9 +235,13 @@ class ContributionsListFragment : CommonsDaggerSupportFragment(), ContributionsL
 
         initAdapter()
 
+        // Setup the new Compose-based contributions grid
+        setupComposeContributionsGrid()
+
         // pull down to refresh only enabled for self user.
         if (sessionManager!!.userName == userName) {
             binding!!.swipeRefreshLayout.setOnRefreshListener {
+                contributionsGridViewModel.refresh()
                 contributionsListPresenter!!.refreshList(
                     binding!!.swipeRefreshLayout
                 )
@@ -247,6 +275,36 @@ class ContributionsListFragment : CommonsDaggerSupportFragment(), ContributionsL
             mediaClient!!,
             mediaDataExtractor!!,
             compositeDisposable)
+    }
+
+    /**
+     * Sets up the Compose-based contributions grid with Paging 3.
+     * This provides a modern Google Photos-style grid layout.
+     */
+    private fun setupComposeContributionsGrid() {
+        // Load contributions for the current user
+        userName?.let { contributionsGridViewModel.loadContributions(it) }
+
+        binding?.composeContributionsGrid?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val isDarkTheme = isSystemInDarkTheme()
+                val colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+
+                MaterialTheme(colorScheme = colorScheme) {
+                    val contributions = contributionsGridViewModel.contributionsPagingFlow.collectAsLazyPagingItems()
+                    val imageLoader = context.imageLoader
+
+                    ContributionsPagingGrid(
+                        contributions = contributions,
+                        imageLoader = imageLoader,
+                        onItemClick = { _, globalIndex ->
+                            callback?.showDetail(globalIndex, false)
+                        }
+                    )
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -70,12 +70,14 @@ private fun calculateSpans(totalSize: Int): List<SpanLayout> {
     // Handle special cases for small counts
     when (totalSize) {
         1 -> {
-            spans.add(SpanLayout(0, 3))
+            // single item spans full width
+            spans.add(SpanLayout(0, GRID_COLUMNS))
             return spans
         }
         2 -> {
-            spans.add(SpanLayout(0, 3))
-            spans.add(SpanLayout(1, 3))
+            // fill the row with a 2+1 split
+            spans.add(SpanLayout(0, 2))
+            spans.add(SpanLayout(1, 1))
             return spans
         }
         3 -> {
@@ -87,7 +89,7 @@ private fun calculateSpans(totalSize: Int): List<SpanLayout> {
         4 -> {
             spans.add(SpanLayout(0, 2))
             spans.add(SpanLayout(1, 1))
-            spans.add(SpanLayout(2, 2))
+            spans.add(SpanLayout(2, 1))
             spans.add(SpanLayout(3, 1))
             return spans
         }
@@ -288,7 +290,8 @@ private fun getTimelineLabel(timestamp: Long, now: Long): String {
 fun ContributionsPagingGrid(
     contributions: LazyPagingItems<ContributionModel>,
     imageLoader: ImageLoader,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: ((contribution: ContributionModel, globalIndex: Int) -> Unit)? = null
 ) {
     val listState = rememberLazyGridState()
 
@@ -370,7 +373,8 @@ fun ContributionsPagingGrid(
                             ContributionPagingCard(
                                 contribution = contribution,
                                 span = span,
-                                imageLoader = imageLoader
+                                imageLoader = imageLoader,
+                                onClick = { onItemClick?.invoke(contribution, globalIndex) }
                             )
                         }
                     }
@@ -443,6 +447,7 @@ private fun ContributionPagingCard(
     contribution: ContributionModel,
     span: Int,
     imageLoader: ImageLoader,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     // Adjust aspect ratio based on the span
@@ -456,7 +461,7 @@ private fun ContributionPagingCard(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(aspectRatio)
-            .clickable { /* TODO: Open detail view */ },
+            .clickable { onClick() },
         shape = RoundedCornerShape(2.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
@@ -485,4 +490,3 @@ private fun ContributionPagingCard(
         }
     }
 }
-

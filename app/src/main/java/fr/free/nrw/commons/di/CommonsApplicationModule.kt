@@ -205,6 +205,7 @@ object CommonsApplicationModule {
     ).addMigrations(
         MIGRATION_1_2,
         MIGRATION_19_TO_20,
+        MIGRATION_20_TO_21,
         MIGRATION_21_22
     ).fallbackToDestructiveMigration().build()
 
@@ -356,6 +357,23 @@ object CommonsApplicationModule {
 
                 cursor.close()
                 oldDb.close()
+            }
+        }
+
+        /**
+         * Migration from v20 to v21: adds the bookmarks_categories table for Room-managed
+         * category bookmarks.
+         */
+        val MIGRATION_20_TO_21: Migration = object : Migration(20, 21) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL(
+                    """
+                    CREATE TABLE IF NOT EXISTS `bookmarks_categories` (
+                        `categoryName` TEXT NOT NULL,
+                        PRIMARY KEY(`categoryName`)
+                    )
+                    """.trimIndent()
+                )
             }
         }
 }

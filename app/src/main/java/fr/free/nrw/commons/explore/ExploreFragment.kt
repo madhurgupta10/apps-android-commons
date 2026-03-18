@@ -6,19 +6,30 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.colorResource
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.activityViewModels
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import coil.imageLoader
+import dagger.hilt.android.AndroidEntryPoint
 import fr.free.nrw.commons.R
 import fr.free.nrw.commons.ViewPagerAdapter
 import fr.free.nrw.commons.contributions.MainActivity
 import fr.free.nrw.commons.databinding.FragmentExploreBinding
 import fr.free.nrw.commons.di.CommonsDaggerSupportFragment
+import fr.free.nrw.commons.feature.contributions.ui.components.ContributionsPagingGrid
 import fr.free.nrw.commons.kvstore.JsonKvStore
 import fr.free.nrw.commons.theme.BaseActivity
 import fr.free.nrw.commons.utils.ActivityUtils.startActivityWithFlags
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -38,6 +49,7 @@ class ExploreFragment : CommonsDaggerSupportFragment() {
     private var prevLongitude = 0.0
     private var viewPagerAdapter: ViewPagerAdapter? = null
     var binding: FragmentExploreBinding? = null
+    private val loggedOutViewModel: LoggedOutExploreViewModel by activityViewModels()
 
     fun setScroll(canScroll: Boolean) {
         if (binding != null) {
@@ -52,6 +64,13 @@ class ExploreFragment : CommonsDaggerSupportFragment() {
         super.onCreate(savedInstanceState)
         loadNearbyMapData()
         binding = FragmentExploreBinding.inflate(inflater, container, false)
+
+        val isLoggedOut = applicationKvStore?.getBoolean("login_skipped") == true
+        if (isLoggedOut) {
+            setupLoggedOutGrid()
+            setHasOptionsMenu(true)
+            return binding!!.root
+        }
 
         viewPagerAdapter = ViewPagerAdapter(
             requireContext(), childFragmentManager,
@@ -210,6 +229,39 @@ class ExploreFragment : CommonsDaggerSupportFragment() {
         }
     }
 
+    private fun setupLoggedOutGrid() {
+        binding?.tabLayout?.visibility = GONE
+        binding?.viewPager?.visibility = GONE
+        binding?.loggedOutExploreGrid?.visibility = VISIBLE
+
+
+        binding?.loggedOutExploreGrid?.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val isDarkTheme = isSystemInDarkTheme()
+                val colorScheme = if (isDarkTheme) darkColorScheme(
+                    primary = colorResource(R.color.primaryDarkColor),
+                    surface = colorResource(R.color.main_background_dark),
+                    background = colorResource(R.color.main_background_dark)
+                ) else lightColorScheme(
+                    primary = colorResource(R.color.primaryColor),
+                    surface = colorResource(R.color.main_background_light),
+                    background = colorResource(R.color.main_background_light)
+                )
+
+                MaterialTheme(colorScheme = colorScheme) {
+                    val contributions = loggedOutViewModel.contributionsPagingFlow.collectAsLazyPagingItems()
+                    val imageLoader = context.imageLoader
+
+                    ContributionsPagingGrid(
+                        contributions = contributions,
+                        imageLoader = imageLoader
+                    )
+                }
+            }
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         binding = null
@@ -220,8 +272,6 @@ class ExploreFragment : CommonsDaggerSupportFragment() {
         private const val MOBILE_UPLOADS_CATEGORY = "Uploaded_with_Mobile/Android"
         private const val EXPLORE_MAP = "Map"
 
-        fun newInstance(): ExploreFragment = ExploreFragment().apply {
-            retainInstance = true
-        }
+        fun newInstance(): ExploreFragment = ExploreFragment()
     }
 }

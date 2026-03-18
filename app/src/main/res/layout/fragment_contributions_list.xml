@@ -55,7 +55,15 @@
         android:fadeScrollbars="true"
         android:scrollbarSize="@dimen/dimen_6"
         android:scrollbarThumbVertical="@color/primaryColor"
-        android:scrollbars="vertical" />
+        android:scrollbars="vertical"
+        android:visibility="gone" />
+
+      <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeContributionsGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tv_contributions_of_user"
+        android:visibility="visible" />
     </RelativeLayout>
 
     <LinearLayout

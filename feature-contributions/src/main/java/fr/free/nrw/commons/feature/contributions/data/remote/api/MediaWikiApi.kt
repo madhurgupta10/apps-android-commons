@@ -5,8 +5,8 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 /**
- * MediaWiki API interface for fetching user contributions
- * API format EXACTLY matches the working implementation from app module's MediaInterface.getMediaListForUser()
+ * MediaWiki API interface for fetching user contributions and category media
+ * API format EXACTLY matches the working implementation from app module's MediaInterface
  */
 interface MediaWikiApi {
 
@@ -19,6 +19,17 @@ interface MediaWikiApi {
     suspend fun getUserContributions(
         @Query("gaiuser") username: String,
         @Query("gailimit") itemLimit: Int = 10,
+        @QueryMap(encoded = true) continuation: Map<String, String> = emptyMap()
+    ): MediaWikiResponse
+
+    /**
+     * Get images from a category
+     * Uses categorymembers generator, same iiprop/iiurlwidth as getUserContributions for consistent thumbUrls
+     */
+    @GET("w/api.php?action=query&format=json&formatversion=2&generator=categorymembers&gcmtype=file&gcmsort=timestamp&gcmdir=desc&prop=imageinfo|coordinates&iiprop=url|extmetadata|user|timestamp&iiurlwidth=640&iiextmetadatafilter=DateTime|Categories|GPSLatitude|GPSLongitude|ImageDescription|DateTimeOriginal|Artist|LicenseShortName|LicenseUrl")
+    suspend fun getCategoryMedia(
+        @Query("gcmtitle") categoryTitle: String,
+        @Query("gcmlimit") itemLimit: Int = 30,
         @QueryMap(encoded = true) continuation: Map<String, String> = emptyMap()
     ): MediaWikiResponse
 }

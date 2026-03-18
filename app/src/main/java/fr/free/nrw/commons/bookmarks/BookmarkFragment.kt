@@ -93,8 +93,6 @@ class BookmarkFragment : CommonsDaggerSupportFragment() {
     }
 
     companion object {
-        fun newInstance(): BookmarkFragment = BookmarkFragment().apply {
-            retainInstance = true
-        }
+        fun newInstance(): BookmarkFragment = BookmarkFragment()
     }
 }

@@ -24,6 +24,8 @@ class ContributionRemoteMediator @Inject constructor(
     private var continuationToken: String? = null
     private var hasMorePages = true
 
+    override suspend fun initialize(): InitializeAction = InitializeAction.LAUNCH_INITIAL_REFRESH
+
     override suspend fun load(
         loadType: LoadType,
         state: PagingState<Int, ContributionEntity>
@@ -34,10 +36,14 @@ class ContributionRemoteMediator @Inject constructor(
                 return MediatorResult.Success(endOfPaginationReached = true)
             }
 
-            // Clear data on refresh
+            // Clear data on refresh - do it before fetching so stale data with null thumbUrls
+            // doesn't linger if the network call takes time
             if (loadType == LoadType.REFRESH) {
                 continuationToken = null
                 hasMorePages = true
+                database.withTransaction {
+                    database.contributionDao().deleteContributionsByUser(username)
+                }
             }
 
             // Skip if we're prepending (we don't support backward pagination)
@@ -63,10 +69,6 @@ class ContributionRemoteMediator @Inject constructor(
 
                     // Save to database
                     database.withTransaction {
-                        if (loadType == LoadType.REFRESH) {
-                            // Clear existing data on refresh
-                            database.contributionDao().deleteContributionsByUser(username)
-                        }
 
                         // Convert to entities and insert
                         val entities = contributions.map {

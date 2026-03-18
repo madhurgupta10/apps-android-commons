@@ -1,5 +1,5 @@
-import java.util.Properties
 import java.io.ByteArrayOutputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -222,6 +222,7 @@ composeCompiler {
 dependencies {
     // Feature Modules
     implementation(project(":feature-profile"))
+    implementation(project(":feature-contributions"))
 
     // Utils
     implementation(libs.gson)
@@ -250,6 +251,7 @@ dependencies {
     // Jetpack Compose
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.runtime)
@@ -272,6 +274,7 @@ dependencies {
     implementation(libs.adapterdelegates4.kotlin.dsl.viewbinding)
     implementation(libs.adapterdelegates4.pagination)
     implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.compose)
     testImplementation(libs.androidx.paging.common.ktx)
     implementation(libs.androidx.paging.rxjava2.ktx)
     implementation(libs.androidx.recyclerview)

@@ -208,8 +208,6 @@ class ExploreMapRootFragment : CommonsDaggerSupportFragment, MediaDetailProvider
     }
 
     companion object {
-        fun newInstance(): ExploreMapRootFragment = ExploreMapRootFragment().apply {
-            retainInstance = true
-        }
+        fun newInstance(): ExploreMapRootFragment = ExploreMapRootFragment()
     }
 }
