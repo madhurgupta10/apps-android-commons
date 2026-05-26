@@ -136,10 +136,12 @@ import java.util.Locale
 import java.util.Objects
 import java.util.regex.Matcher
 import java.util.regex.Pattern
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import javax.inject.Named
 import androidx.core.view.isVisible
 
+@AndroidEntryPoint
 class MediaDetailFragment : CommonsDaggerSupportFragment(), CategoryEditHelper.Callback {
     private var editable: Boolean = false
     private var isCategoryImage: Boolean = false
