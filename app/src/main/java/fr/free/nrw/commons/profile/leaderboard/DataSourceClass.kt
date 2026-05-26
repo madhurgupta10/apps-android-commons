@@ -1,6 +1,5 @@
 package fr.free.nrw.commons.profile.leaderboard
 
-import android.accounts.Account
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PageKeyedDataSource
 import fr.free.nrw.commons.auth.SessionManager
@@ -10,7 +9,6 @@ import fr.free.nrw.commons.profile.leaderboard.LeaderboardConstants.LoadingStatu
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import timber.log.Timber
-import java.util.Objects
 
 /**
  * This class will call the leaderboard API to get new list when the pagination is performed
@@ -28,7 +26,7 @@ class DataSourceClass(
 
 
     override fun loadInitial(
-        params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, LeaderboardList?>
+        params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, LeaderboardList>
     ) {
         compositeDisposable.add(okHttpJsonApiClient.getLeaderboard(
             sessionManager.currentAccount?.name,
@@ -51,14 +49,14 @@ class DataSourceClass(
     }
 
     override fun loadBefore(
-        params: LoadParams<Int>, callback: LoadCallback<Int, LeaderboardList?>
+        params: LoadParams<Int>, callback: LoadCallback<Int, LeaderboardList>
     ) = Unit
 
     override fun loadAfter(
-        params: LoadParams<Int>, callback: LoadCallback<Int, LeaderboardList?>
+        params: LoadParams<Int>, callback: LoadCallback<Int, LeaderboardList>
     ) {
         compositeDisposable.add(okHttpJsonApiClient.getLeaderboard(
-            Objects.requireNonNull<Account?>(sessionManager.currentAccount).name,
+            sessionManager.currentAccount?.name,
             duration,
             category,
             limit.toString(),

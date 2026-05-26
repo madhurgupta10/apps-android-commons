@@ -5,7 +5,9 @@ import android.view.View
 import fr.free.nrw.commons.R
 import fr.free.nrw.commons.explore.depictions.PageableDepictionsFragment
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ParentDepictionsFragment : PageableDepictionsFragment() {
     @Inject
     lateinit var presenter: ParentDepictionsPresenter

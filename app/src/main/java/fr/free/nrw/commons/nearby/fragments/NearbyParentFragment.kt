@@ -186,7 +186,7 @@ class NearbyParentFragment : CommonsDaggerSupportFragment(),
     lateinit var nearbyController: NearbyController
 
     @Inject
-    @Named("default_preferences")
+    @field:Named("default_preferences")
     lateinit var applicationKvStore: JsonKvStore
 
     @Inject
@@ -3146,9 +3146,7 @@ class NearbyParentFragment : CommonsDaggerSupportFragment(),
 
         @JvmStatic  // This makes it callable as a static method from Java
         fun newInstance(): NearbyParentFragment {
-            val fragment = NearbyParentFragment()
-            fragment.retainInstance = true
-            return fragment
+            return NearbyParentFragment()
         }
 
         @JvmStatic

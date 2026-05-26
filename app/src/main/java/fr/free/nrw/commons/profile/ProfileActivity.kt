@@ -27,11 +27,13 @@ import timber.log.Timber
 import java.io.File
 import java.io.FileOutputStream
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * This activity will set two tabs, achievements and
  * each tab will have their own fragments
  */
+@AndroidEntryPoint
 class ProfileActivity : BaseActivity() {
 
     lateinit var binding: ActivityProfileBinding

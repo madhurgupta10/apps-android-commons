@@ -24,8 +24,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.Locale
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 import androidx.core.view.isVisible
 
+@AndroidEntryPoint
 class ReviewActivity : BaseActivity() {
 
     private lateinit var binding: ActivityReviewBinding
@@ -315,6 +317,22 @@ class ReviewActivity : BaseActivity() {
                 .addToBackStack("MediaDetail")
                 .commit()
         }
+    }
+
+    /**
+     * handle the back pressed event of this activity
+     * this function call every time when back button is pressed
+     */
+    @Deprecated("This method has been deprecated in favor of using the" +
+            "{@link OnBackPressedDispatcher} via {@link #getOnBackPressedDispatcher()}." +
+            "The OnBackPressedDispatcher controls how back button events are dispatched" +
+            "to one or more {@link OnBackPressedCallback} objects.")
+    override fun onBackPressed() {
+        if (binding.mediaDetailContainer.visibility == View.VISIBLE) {
+            binding.mediaDetailContainer.visibility = View.GONE
+            binding.reviewActivityContainer.visibility = View.VISIBLE
+        }
+        super.onBackPressed()
     }
 
     /**

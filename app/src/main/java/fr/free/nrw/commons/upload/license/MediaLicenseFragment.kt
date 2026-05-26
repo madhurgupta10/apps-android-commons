@@ -23,10 +23,12 @@ import fr.free.nrw.commons.utils.DialogUtil.showAlertDialog
 import fr.free.nrw.commons.utils.handleWebUrl
 import fr.free.nrw.commons.utils.toLicenseName
 import fr.free.nrw.commons.utils.toLicenseUrl
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 import androidx.recyclerview.widget.LinearLayoutManager
 
+@AndroidEntryPoint
 class MediaLicenseFragment : UploadBaseFragment(), MediaLicenseContract.View {
     @Inject
     lateinit var presenter: MediaLicenseContract.UserActionListener

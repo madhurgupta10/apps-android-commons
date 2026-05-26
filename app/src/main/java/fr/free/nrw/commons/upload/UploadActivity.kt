@@ -63,7 +63,9 @@ import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Named
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UploadActivity : BaseActivity(), UploadContract.View, UploadBaseFragment.Callback,
     OnThumbnailDeletedListener {
     @JvmField

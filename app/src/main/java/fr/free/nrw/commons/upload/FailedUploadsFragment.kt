@@ -20,11 +20,13 @@ import fr.free.nrw.commons.utils.ViewUtil
 import org.apache.commons.lang3.StringUtils
 import java.util.Locale
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment for displaying a list of failed uploads in Upload Progress Activity. This fragment provides
  * functionality for the user to retry or cancel failed uploads.
  */
+@AndroidEntryPoint
 class FailedUploadsFragment :
     CommonsDaggerSupportFragment(),
     PendingUploadsContract.View,

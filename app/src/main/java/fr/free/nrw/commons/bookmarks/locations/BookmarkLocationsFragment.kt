@@ -8,9 +8,10 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.android.support.DaggerFragment
+import dagger.hilt.android.AndroidEntryPoint
 import fr.free.nrw.commons.R
 import fr.free.nrw.commons.contributions.ContributionController
 import fr.free.nrw.commons.databinding.FragmentBookmarksLocationsBinding
@@ -20,8 +21,8 @@ import fr.free.nrw.commons.nearby.fragments.PlaceAdapter
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
-class BookmarkLocationsFragment : DaggerFragment() {
+@AndroidEntryPoint
+class BookmarkLocationsFragment : Fragment() {
 
     private var binding: FragmentBookmarksLocationsBinding? = null
 

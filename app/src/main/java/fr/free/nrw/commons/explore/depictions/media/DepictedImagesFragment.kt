@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.View
 import fr.free.nrw.commons.explore.media.PageableMediaFragment
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DepictedImagesFragment : PageableMediaFragment() {
     @Inject
     lateinit var presenter: DepictedImagesPresenter

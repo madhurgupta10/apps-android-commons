@@ -53,11 +53,13 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Activity for helping to view an image in full-screen mode with some other features
  * like zoom, and swap gestures
  */
+@AndroidEntryPoint
 class ZoomableActivity : BaseActivity() {
     private lateinit var imageUri: Uri
 

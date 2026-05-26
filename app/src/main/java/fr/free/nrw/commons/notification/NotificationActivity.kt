@@ -30,10 +30,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Created by root on 18.12.2017.
  */
+@AndroidEntryPoint
 class NotificationActivity : BaseActivity() {
 
     private lateinit var binding: ActivityNotificationBinding

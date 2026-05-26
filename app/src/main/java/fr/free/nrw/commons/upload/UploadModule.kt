@@ -3,7 +3,7 @@ package fr.free.nrw.commons.upload
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.components.SingletonComponent
 import fr.free.nrw.commons.upload.categories.CategoriesContract
 import fr.free.nrw.commons.upload.categories.CategoriesPresenter
 import fr.free.nrw.commons.upload.depicts.DepictsContract
@@ -17,7 +17,7 @@ import fr.free.nrw.commons.upload.mediaDetails.UploadMediaPresenter
  * The Dagger Module for upload related presenters and (some other objects maybe in future)
  */
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 abstract class UploadModule {
     @Binds
     abstract fun bindHomePresenter(presenter: UploadPresenter): UploadContract.UserActionListener

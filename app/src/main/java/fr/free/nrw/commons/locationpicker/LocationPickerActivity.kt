@@ -62,11 +62,13 @@ import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
  * Helps to pick location and return the result with an intent
  */
+@AndroidEntryPoint
 class LocationPickerActivity : BaseActivity(), LocationPermissionCallback {
     /**
      * coordinateEditHelper: helps to edit coordinates

@@ -30,6 +30,13 @@
         android:orientation="horizontal"
         android:visibility="gone" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/loggedOutExploreGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar_layout"
+        android:visibility="gone" />
+
     <fr.free.nrw.commons.explore.ParentViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"

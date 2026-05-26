@@ -991,9 +991,7 @@ class ContributionsFragment : CommonsDaggerSupportFragment(), FragmentManager.On
 
         @JvmStatic
         fun newInstance(): ContributionsFragment {
-            val fragment = ContributionsFragment()
-            fragment.retainInstance = true
-            return fragment
+            return ContributionsFragment()
         }
     }
 }

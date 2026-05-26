@@ -17,12 +17,10 @@ import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Singleton
 
 /**
  * The MVP pattern presenter of Upload GUI
  */
-@Singleton
 class UploadPresenter @Inject internal constructor(
     private val repository: UploadRepository,
     @param:Named("default_preferences") private val defaultKvStore: JsonKvStore

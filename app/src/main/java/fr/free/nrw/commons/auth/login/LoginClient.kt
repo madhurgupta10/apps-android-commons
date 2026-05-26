@@ -138,6 +138,9 @@ class LoginClient(
                         } else {
                             cb.error(LoginFailedException(loginResult.message))
                         }
+                    } else if (response.body()?.error != null) {
+                        // Fallback: If loginResult is null but there is an error field in the response
+                        cb.error(LoginFailedException(response.body()?.error?.details ?: "Unknown error"))
                     } else {
                         cb.error(IOException("Login failed. Unexpected response."))
                     }
@@ -258,8 +261,9 @@ class LoginClient(
                 response?.query()?.getUserResponse(userName)?.getGroups() ?: emptySet()
             cb.success(loginResult)
         }, { caught: Throwable ->
-            Timber.e(caught, "Login succeeded but getting group information failed. ")
-            cb.error(caught)
+            Timber.e(caught, "Login succeeded but getting group information failed. Proceeding anyway.")
+            // Login credentials are valid - proceed with login even if extended info fails
+            cb.success(loginResult)
         })
 
     fun cancel() {

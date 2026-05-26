@@ -3,10 +3,12 @@ package fr.free.nrw.commons.explore.depictions.search
 import fr.free.nrw.commons.R
 import fr.free.nrw.commons.explore.depictions.PageableDepictionsFragment
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Display depictions in search fragment
  */
+@AndroidEntryPoint
 class SearchDepictionsFragment : PageableDepictionsFragment() {
     @Inject
     lateinit var presenter: SearchDepictionsFragmentPresenter

@@ -19,11 +19,13 @@ import fr.free.nrw.commons.utils.DialogUtil.showAlertDialog
 import fr.free.nrw.commons.utils.ViewUtil
 import java.util.Locale
 import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Fragment for showing pending uploads in Upload Progress Activity. This fragment provides
  * functionality for the user to pause uploads.
  */
+@AndroidEntryPoint
 class PendingUploadsFragment :
     CommonsDaggerSupportFragment(),
     PendingUploadsContract.View,

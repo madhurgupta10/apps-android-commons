@@ -127,7 +127,9 @@ class MediaDetailPagerFragment : CommonsDaggerSupportFragment(), OnPageChangeLis
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt("current-page", binding!!.mediaDetailsPager.currentItem)
+        binding?.let {
+            outState.putInt("current-page", it.mediaDetailsPager.currentItem)
+        }
         outState.putBoolean("editable", editable)
         outState.putBoolean("isFeaturedImage", isFeaturedImage)
     }
